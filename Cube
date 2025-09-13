@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centered 2D Cube Wireframe</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    canvas {
+      border: 2px solid #333;
+      background: white;
+      margin-top: 10px;
+    }
+    #info {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Centered 2D Cube Wireframe</h2>
+  <canvas id="cubeCanvas" width="400" height="400"></canvas>
+  <br>
+  <button onclick="generateCube()">Generate Random Cube</button>
+  <div id="info">Length: - , Width: - , Height: -</div>
+
+  <script>
+    const canvas = document.getElementById("cubeCanvas");
+    const ctx = canvas.getContext("2d");
+    const info = document.getElementById("info");
+
+    function drawCube(size) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Center of canvas
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      // Isometric offset
+      const dx = size * 0.5;
+      const dy = size * 0.5;
+
+      // Define 8 vertices of cube (centered)
+      const vertices = {
+        // Front face
+        F1: {x: cx - size / 2, y: cy - size / 2}, // top-left
+        F2: {x: cx + size / 2, y: cy - size / 2}, // top-right
+        F3: {x: cx + size / 2, y: cy + size / 2}, // bottom-right
+        F4: {x: cx - size / 2, y: cy + size / 2}, // bottom-left
+
+        // Back face
+        B1: {x: cx - size / 2 + dx, y: cy - size / 2 - dy}, // top-left
+        B2: {x: cx + size / 2 + dx, y: cy - size / 2 - dy}, // top-right
+        B3: {x: cx + size / 2 + dx, y: cy + size / 2 - dy}, // bottom-right
+        B4: {x: cx - size / 2 + dx, y: cy + size / 2 - dy}  // bottom-left
+      };
+
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+
+      // 12 edges
+      const edges = [
+        // Front face
+        ['F1', 'F2'], ['F2', 'F3'], ['F3', 'F4'], ['F4', 'F1'],
+        // Back face
+        ['B1', 'B2'], ['B2', 'B3'], ['B3', 'B4'], ['B4', 'B1'],
+        // Connecting edges
+        ['F1', 'B1'], ['F2', 'B2'], ['F3', 'B3'], ['F4', 'B4']
+      ];
+
+      edges.forEach(edge => {
+        ctx.beginPath();
+        ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
+        ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y);
+        ctx.stroke();
+      });
+    }
+
+    function generateCube() {
+      const size = Math.floor(Math.random() * 80) + 50; // random 50-130
+      drawCube(size);
+      info.textContent = `Length: ${size}, Width: ${size}, Height: ${size}`;
+    }
+  </script>
+</body>
+</html>
